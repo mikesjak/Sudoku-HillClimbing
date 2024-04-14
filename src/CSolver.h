@@ -2,12 +2,13 @@
 
 #include "CGrid.h"
 #include "CHillClimber.h"
+#include "CKeyHandler.h"
 
 class CSolver {
 public:
-    CSolver() = default;
-    void solve();
+    static void solve();
 private:
     static std::string chooseFile();
     static bool isFile(std::string& fp);
+    static void welcomeMessage();
 };

@@ -1,19 +1,20 @@
-#pragma once
-#include "grid.h"
+#include "CGrid.h"
 
 bool CGrid::checkSqrt(int num) {
-    int s = round(sqrt(num));
+    int s = int(round(sqrt(num)));
     square = s;
     if ( num != (s*s) )
         return false;
     return true;
 }
 
-bool CGrid::load( std::string& fileName ) {
+void CGrid::load( std::string& fileName ) {
     std::ifstream inFs{ fileName, std::ios::in | std::ios::binary };
     std::string line;
     std::getline(inFs, line);
-    int s = std::stol(line);
+    int s = int(std::stol(line));
+
+    // Padding
     int tmp = s;
     while ( tmp > 10 ) {
         tmp /= 10;
@@ -29,11 +30,12 @@ bool CGrid::load( std::string& fileName ) {
     size = s;
     
     for ( int i = 0; i < size; i++ ) {
-        std::vector<int> tmp;
+        std::vector<int> tmpVec;
+        nums[i+1] = 0;
         for ( int j = 0; j < size; j++ ) {
-            tmp.push_back(0);
+            tmpVec.push_back(0);
         }
-        grid.push_back(tmp);
+        grid.push_back(tmpVec);
     }
 
     for ( int i = 0; i < size; i++ ) {
@@ -43,10 +45,15 @@ bool CGrid::load( std::string& fileName ) {
         std::istringstream ss(buffer);
 
         for ( int j = 0; j < size; j++ ) {
-            ss >> grid[i][j];
+            int curr;
+            ss >> curr;
+            if ( curr > size ) {
+                throw std::invalid_argument("Invalid number in input!\n");
+            }
+            grid[i][j] = curr;
+            nums[curr]++;
         }
     }
-    return true;
 }
 
 std::ostream &operator <<(std::ostream &os, const CGrid &grid) {
@@ -67,7 +74,14 @@ std::ostream &operator <<(std::ostream &os, const CGrid &grid) {
     for ( int i = 0; i < grid.size; i++ ) {
         os << "║";
         for ( int j = 0; j < grid.size; j++ ) {
-            os << " " << std::setw(grid.padding-2) << std::setfill(' ') << grid.grid[i][j] << " ";
+            os << " " << std::setw(grid.padding-2) << std::setfill(' ');
+            if ( grid.grid[i][j] ) {
+                std::cout << grid.grid[i][j];
+            }
+            else {
+                std::cout << " ";
+            }
+            std::cout << " ";
             if ( (j+1) % grid.square == 0 )
                 os << "║";
             else if (j != grid.size-1 ) {

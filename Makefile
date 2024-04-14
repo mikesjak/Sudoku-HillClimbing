@@ -1,3 +1,5 @@
+# Inspired by https://gitlab.fit.cvut.cz/bernhdav/pa2-bomb-tag/blob/master/Makefile
+
 CXX=g++
 CXXFLAGS = -Wall -pedantic -std=c++17 -g 
 
